@@ -1,0 +1,27 @@
+//	By Creating the UserDetailsService bean to verify the user details through customized user details
+//	It return the Object of UserDetailsService Interface
+
+// UserDetailsService is an Interface so we are using the class which implements it and the class is 
+	InMemoryUserDetailsManager where it implements UserDetailsManager where it implements UserDetailsService
+	
+	@Bean
+	UserDetailsService userDetailsService() {
+	
+// UserDetails is and Interface again so we need to use this to customize the User Details like 
+	password and userName so to return this Object we need to Use another class called 
+	User which provide the method called build also.
+		UserDetails user1 = User
+				.withDefaultPasswordEncoder()
+				.username("deepak")
+				.password("1234")
+				.roles("USER")
+				.build();
+		
+		UserDetails user2 = User
+				.withDefaultPasswordEncoder()
+				.username("ravi")
+				.password("1234")
+				.roles("ADMIN")
+				.build();
+		return new InMemoryUserDetailsManager(user1, user2);
+	}

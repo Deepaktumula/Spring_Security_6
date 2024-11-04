@@ -1,0 +1,21 @@
+@Bean
+	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+//		Disabling the Default Login Filter
+		
+//		customizer is an Object of Customizer of type csrfConfigurer of type HttpSecurity
+//		By using lambda expression we are directly passing the customizer object
+		http.csrf(customizer -> customizer.disable());
+		
+//		Disabling the Login Form & Also Authorizing the every request if Access Grants 
+		http.authorizeHttpRequests(request -> request.anyRequest().authenticated());
+		
+//		Enabling the Login Form
+//		http.formLogin(Customizer.withDefaults());
+		
+//		Granting access to PostMan so that directly it can allow the request
+		http.httpBasic(Customizer.withDefaults());
+		
+//		Making the HTTP StateLess to generate every time a new sessionId for new Request
+		http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+		return http.build();
+	}
