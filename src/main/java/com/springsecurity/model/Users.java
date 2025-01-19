@@ -27,4 +27,6 @@ public class Users {
 	private String userName;
 	@Column(nullable = false)
 	private String password;
+	@Column(nullable = false)
+	private String roles;
 }
