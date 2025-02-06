@@ -17,6 +17,7 @@ import com.springsecurity.service.MyUserDetailsService;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -33,17 +34,26 @@ public class JwtFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
 
-		String authHeader = request.getHeader("Authorization");
+//		String authHeader = request.getHeader("Authorization");
 		String token = null;
 		String userName = null;
 		try {
 
-			if (authHeader != null && authHeader.startsWith("Bearer ")) {
-//				Extracting only token
-				token = authHeader.substring(7);
-//				Extracting UserName
-				userName = jwtService.extractUserName(token);
-
+//			if (authHeader != null && authHeader.startsWith("Bearer ")) {
+////				Extracting only token
+//				token = authHeader.substring(7);
+////				Extracting UserName
+//				userName = jwtService.extractUserName(token);
+//
+//			}
+			
+			if (request.getCookies() != null) {
+				for (Cookie cookie : request.getCookies()) {
+					if (cookie.getName().equals("authToken")) {
+						token = cookie.getValue();
+						userName = jwtService.extractUserName(token);
+					}
+				}
 			}
 //			Checking whether the UserName is present or not and checking if it is already authenticated before or not
 			if (userName != null && SecurityContextHolder.getContext().getAuthentication() == null) {
