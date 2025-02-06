@@ -32,8 +32,24 @@ public class SecurityConfig {
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		return	http.csrf(customizer -> customizer.disable())
 				.authorizeHttpRequests(request -> request
-						.requestMatchers("register", "login").permitAll()
+						.requestMatchers("register", "authentication", "clearCookie").permitAll()
+						.requestMatchers("/user/**").hasAuthority("ROLE_USER")
+						.requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
 						.anyRequest().authenticated())
+				.formLogin(formLogin ->{
+					formLogin.loginPage("/login").permitAll();
+				})
+//				.formLogin(form -> form.loginPage("/login") // Custom login page URL
+//						.loginProcessingUrl("/auth/login") // URL to submit the credentials
+//						.usernameParameter("username") // UserName parameter name in the form
+//						.passwordParameter("password") // Password parameter name in the form
+//						// Redirect after successful login
+//						.failureUrl("/login?error=true") // Redirect after failed login
+//						.permitAll())
+//				.logout(logout -> logout.logoutUrl("/auth/logout") // Logout URL
+//						.logoutSuccessUrl("/login?logout=true") // Redirect after logout
+//						.deleteCookies("jwt") // Clear cookies on logout
+//						.permitAll())
 				.httpBasic(Customizer.withDefaults())
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
